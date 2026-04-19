@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X → LMS Telkom</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 280px;
+      background: #0a0a0f;
+      color: #f0f0f0;
+      font-family: 'Syne', sans-serif;
+      overflow: hidden;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: #ff4444;
+      text-transform: uppercase;
+      border: 1px solid #ff444440;
+      padding: 3px 7px;
+      border-radius: 2px;
+      background: #ff44440d;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .title span {
+      color: #ff4444;
+    }
+
+    .arrow-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0;
+      padding: 14px;
+      background: #ffffff08;
+      border: 1px solid #ffffff10;
+      border-radius: 8px;
+    }
+
+    .from-site {
+      flex: 1;
+      text-align: center;
+    }
+
+    .from-site .domain {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: #ff4444;
+      text-decoration: line-through;
+      opacity: 0.8;
+    }
+
+    .from-site .label {
+      font-size: 9px;
+      color: #ffffff40;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+
+    .arrow {
+      font-size: 18px;
+      color: #ffffff30;
+      flex-shrink: 0;
+    }
+
+    .to-site {
+      flex: 1;
+      text-align: center;
+    }
+
+    .to-site .domain {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: #4ade80;
+    }
+
+    .to-site .label {
+      font-size: 9px;
+      color: #ffffff40;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .status-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .status-text.active { color: #4ade80; }
+    .status-text.inactive { color: #ff4444; }
+
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    .toggle input { display: none; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #ffffff15;
+      border-radius: 11px;
+      border: 1px solid #ffffff20;
+      transition: 0.25s;
+    }
+
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 3px;
+      top: 2px;
+      background: #ff4444;
+      border-radius: 50%;
+      transition: 0.25s;
+    }
+
+    input:checked + .slider {
+      background: #4ade8020;
+      border-color: #4ade8040;
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(18px);
+      background: #4ade80;
+    }
+
+    .divider {
+      height: 1px;
+      background: #ffffff10;
+      margin: 14px 0;
+    }
+
+    .quote {
+      font-size: 11px;
+      color: #ffffff40;
+      font-style: italic;
+      line-height: 1.5;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .quote strong {
+      color: #ffffff70;
+      font-style: normal;
+    }
+
+    .pulse {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #4ade80;
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    .pulse.off {
+      background: #ff4444;
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="container">
+    <div class="header">
+      <div class="badge">ACTIVE</div>
+    </div>
+
+    <div class="title">FOKUS<br><span>BELAJAR.</span></div>
+
+    <div class="arrow-section">
+      <div class="from-site">
+        <div class="domain">x.com</div>
+        <div class="label">diblokir</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="to-site">
+        <div class="domain">LMS Telkom</div>
+        <div class="label">diarahkan</div>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <div style="display:flex;align-items:center;">
+        <span class="pulse" id="pulseEl"></span>
+        <span class="status-text active" id="statusText">REDIRECT AKTIF</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="toggleSwitch" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="quote" id="quoteEl">
+      <strong>"Deadline itu nyata.</strong><br>
+      timeline twitter tidak."
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
